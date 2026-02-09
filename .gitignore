@@ -1,0 +1,38 @@
+# --- IDE & System ---
+.vscode/
+.devcontainer/
+.DS_Store
+Thumbs.db
+
+# --- Security & Secrets ---
+.env
+.env.*
+secrets.json
+*.pem
+id_rsa
+*.key
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+build/
+dist/
+*.egg-info/
+
+# --- Project Specific (Forensics) ---
+# Ignore all PCAP files to prevent leaking network traffic data
+*.pcap
+*.pcapng
+*.cap
+*.log
+
+# --- Large Files/Caches ---
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
