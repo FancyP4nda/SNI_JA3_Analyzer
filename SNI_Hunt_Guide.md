@@ -14,7 +14,7 @@
 
 ---
 
-### **3. Metadata Fingerprinting (The JA3/JA4 Pivot)**
+### **3. Metadata Fingerprinting**
 
 The fingerprint identifies the **software library** or **application** initiating the tunnel.
 
@@ -35,10 +35,6 @@ The fingerprint identifies the **software library** or **application** initiatin
 ---
 
 ### **Splunk Queries**
-These Splunk queries are designed to help you execute the phases of the **Generic Hunt Guide** we built. Since you’re running a sophisticated setup on your **Lenovo P14s**, these searches leverage the high-fidelity fields found in Zeek, Suricata, or Cisco NVM logs.
-
----
-
 ### **1. Detection: Finding ECH Evasion**
 
 This query identifies sessions where the client is attempting to hide the SNI. It looks for the specific extension ID `65037` (ECH) or `65486` (ESNI).
