@@ -6,13 +6,11 @@
 
 ---
 
-### **2. Network Layer Analysis (The SD-WAN Pivot)**
-
-In a hunt, your network logs provide the "What" and "Where."
+### **2. Network Layer Analysis**
 
 * **Audit for ECH-Capable Traffic:** Filter your logs for the presence of the ECH extension (**0xfe0d** or **65037**) or ESNI (**0xffce**).
 * **The "Reputation Gap":** Look for sessions where the **Outer SNI** belongs to a high-reputation CDN (Cloudflare, Akamai, Google) but the **JA3/JA4 Fingerprint** does not match a standard corporate browser.
-* **Asymmetry Hunting:** Monitor for "Elephant Flows"—encrypted sessions with an `Outbound:Inbound` byte ratio exceeding **20:1**. These are classic indicators of exfiltration, regardless of the SNI.
+* **Asymmetry Hunting:** Monitor for "asymmetric Flows"—encrypted sessions with an `Outbound:Inbound` byte ratio exceeding **20:1**. These are classic indicators of exfiltration, regardless of the SNI.
 
 ---
 
@@ -22,31 +20,9 @@ The fingerprint identifies the **software library** or **application** initiatin
 
 | Step | Technique | Goal |
 | --- | --- | --- |
-| **A. Extract** | Run your Python/Scapy script on the source PCAP. | Get the 32-character MD5 hash. |
+| **A. Extract** | Run the Python script on the source PCAP. | Get the 32-character MD5 hash. |
 | **B. Lookup** | Search [JA3er.com](https://ja3er.com) or [Abuse.ch SSLBL](https://sslbl.abuse.ch). | Map the hash to a client (e.g., `rclone`, `Metasploit`, `python-requests`). |
 | **C. Triage** | Check for "GREASE" values in the `ja3_string`. | Confirm if the client is a browser or a standalone script. |
-
----
-
-### **4. Endpoint Forensic Correlation**
-
-Packets don't lie, but they only tell half the story. You must bridge the gap to the host.
-
-* **Process Attribution:** Use EDR/Sysmon (Event ID 3) to find the specific PID that owned the socket to the destination IP at that exact timestamp.
-* **The "Shadow IT" vs. "Malware" Check:**
-* **Scenario A:** The process is a signed `Dashlane.exe`. *Result:* Likely a false positive or authorized tool.
-* **Scenario B:** The process is an unsigned `tmp83.exe` or `powershell.exe`. *Result:* **High Priority Compromise.**
-
-
-* **ECH Discovery Logs:** Search the host for DNS queries for `HTTPS` or `SVCB` records. These are required for ECH to function and will reveal the *real* domain the attacker intended to reach.
-
----
-
-### **5. Containment & Remediation Strategy**
-
-* **DNS Hardening:** Force all endpoints to use internal DNS resolvers. Block external DoH (DNS over HTTPS) and DoT (DNS over TLS) to prevent clients from fetching the ECH public keys.
-* **GPO Enforcement:** Disable ECH/ESNI in browser settings (e.g., Chrome's `EncryptedClientHelloEnabled`) to restore visibility to your SD-WAN.
-* **YARA Scanning:** If a specific JA3 hash is confirmed malicious, create a YARA rule for your EDR to scan process memory across the environment for matching TLS configurations.
 
 ---
 
@@ -56,7 +32,6 @@ Packets don't lie, but they only tell half the story. You must bridge the gap to
 2. [ ] **Analyze:** Compare JA3 against known-good browser baselines.
 3. [ ] **Pivot:** Correlate Network IP/Timestamp to an Endpoint Process.
 4. [ ] **Expose:** Check DNS logs for ECH key bootstrap records.
-5. [ ] **Block:** Implement ECH-stripping or DNS-layer blocking.
 ---
 
 ### **Splunk Queries**
@@ -120,9 +95,7 @@ index=endpoint_logs (sourcetype="WinEventLog:Microsoft-Windows-Sysmon/Operationa
 
 ---
 
-### **4. Exfiltration: Detecting "Elephant Flows"**
-
-If you suspect data is actually leaving the building, use this to find asymmetrical encrypted sessions.
+### **4. Exfiltration: Detecting "Asymmetric Flows"**
 
 ```splunk
 index=network_logs sourcetype="pan:traffic" OR sourcetype="cisco:nvm"
