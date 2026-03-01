@@ -11,6 +11,11 @@ secrets.json
 *.pem
 id_rsa
 *.key
+*.pub
+~/.aws/
+config.toml
+
+# --- Builds & Binaries ---
 
 # --- Python ---
 __pycache__/
@@ -24,6 +29,9 @@ venv/
 build/
 dist/
 *.egg-info/
+*.spec  # PyInstaller spec files
+tls-analyzer  # Compiled binary output
+tls-analyzer.exe
 
 # --- Project Specific (Forensics) ---
 # Ignore all PCAP files to prevent leaking network traffic data
