@@ -1,0 +1,42 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tls-analyzer"
+version = "0.1.0"
+description = "High-Performance TLS Forensic CLI Utility"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "scapy>=2.5.0",
+    "typer>=0.12.0",
+    "rich>=13.7.0",
+    "cryptography>=42.0.0"
+]
+
+[project.scripts]
+tls-analyzer = "tls_analyzer.cli:app"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "black",
+    "ruff",
+    "mypy"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tls_analyzer"]
+
+[tool.black]
+line-length = 100
+target-version = ['py38']
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
