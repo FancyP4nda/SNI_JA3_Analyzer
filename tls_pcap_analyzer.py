@@ -146,7 +146,7 @@ def parse_args():
 
 
 def ts_to_str(ts):
-    # Use ISO8601 UTC for consistent forensics
+    # Use ISO8601 UTC
     # scapy can return EDecimal for pcapng timestamps
     try:
         ts_val = float(ts)
